@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yumna's Journal | Online Flower Shop</title>
+    <meta name="description" content="Yumna's Journal offers a beautiful collection of flowers with inspiring quotes. Find roses, tulips, sunflowers, and more with meaningful messages.">
+    <meta name="keywords" content="flowers, online flower shop, roses, tulips, sunflowers, floral quotes, buy flowers online, Yumna's Journal">
+    <meta name="author" content="Yumna's Journal">
+
+    <!-- font-awesome cdn link -->
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+
+    <!-- custom css file link -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <section id="header">
+        <a href="#"><img src="images/logo.png" class="logo" alt=""></a>
+        <div>
+            <ul id="navbar">
+                <li><a href="index.php">Home</a></li>
+                <li><a href="shop.php">Shop</a></li>
+                <li><a href="wiki.php">Wikis</a></li>
+                <li><a href="about.php">About</a></li>
+                <li><a href="contact.php">Contact</a></li>
+    </section>
+
+    <section id="page-header" class="about-header">
+        <h2>Themes</h2>
+        <p>Get to know more about us</p>
+    </section>
+
+    <section id="about-head" class="section-p1">
+        <img src="images/about/a2.jpg" alt="">
+        <div>
+            <h2>Themes</h2>
+            <p> We different themes for every season: Winter, Spring/Summer, and Fall! You can change the themese by 
+                simply clicking on the the one that you want from belowe. For example, when you click on Winter you the webpage will change to winter theme 
+                with winter special pictures and products. Furthermore, the webpage theme automatically changes based on the date and time of when the new season
+                starts. Below you can see the time zone for the major cities and the change of the theme is world wide based on the local time in that area! 🌸✨
+            </p>
+            <abbr title="">Create stunning website for a cute little flowers shop.
+            </abbr>
+            <br><br>
+            <marquee bgcolor="#ccc" loop="-1" scrollamount="5" width="100%">Hope you love our flowers!
+            </marquee>
+        </div>
+    </section>
+
+    <section id="about-app" class="section-p1">
+      <label for="theme-selector">Choose a Theme:</label>
+      <select id="theme-selector">
+          <option value="style.css">Spring/Summer - Regular</option>
+          <option value="fall.css">Fall</option>
+          <option value="winter.css">Winter</option>
+      </select>
+  </section>
+  
+
+  <!-- Link to Default CSS -->
+<link id="theme-link" rel="stylesheet" href="style.css">
+<script src="theme.js" defer></script>
+
+    <title>Current Time of Major Cities</title>
+    <style>
+      /* Style the table for a clean look */
+      table {
+        border-collapse: collapse;
+        width: 80%;
+        margin: 20px auto;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      caption {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1 style="text-align: center;">Current Time of Major Cities</h1>
+    
+    <!-- The table that will display the time zone data -->
+    <table id="weatherTable">
+      <caption>Time Zone Data</caption>
+      <thead>
+        <tr>
+          <th>City</th>
+          <th>Time Zone</th>
+          <th>Current Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows will be dynamically inserted here -->
+      </tbody>
+    </table>
+    
+    <script>
+      /**
+       * 1. Mapping cities to their respective time zones.
+       *    - The key represents the city name.
+       *    - The value represents the correct time zone identifier used by the API.
+       */
+      const cityTimeZones = {
+        'New York': 'America/New_York',
+        'London': 'Europe/London',
+        'Tokyo': 'Asia/Tokyo',
+        'Paris': 'Europe/Paris',
+        'Moscow': 'Europe/Moscow',
+        'Sydney': 'Australia/Sydney',
+        'Beijing': 'Asia/Shanghai',
+        'Mumbai': 'Asia/Kolkata',
+        'Sao Paulo': 'America/Sao_Paulo',
+        'Cairo': 'Africa/Cairo'
+      };
+  
+      /**
+       * 2. Function: fetchTimeZone
+       *    - Fetches the current time data for a given time zone using WorldTimeAPI.
+       *    - Extracts the date-time information and formats it properly.
+       * 
+       * @param {string} timeZone - The time zone identifier (e.g., 'America/New_York').
+       * @returns {Promise<{timezone: string, currentTime: string}>} - Returns the formatted time zone and current time.
+       */
+       async function fetchTimeZone(timeZone, retries = 3) {
+    const url = `https://worldtimeapi.org/api/timezone/${timeZone}`;
+
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`Attempt ${attempt}: Failed to fetch time data for ${timeZone}`);
+            }
+
+            const data = await response.json();
+
+            const formattedTime = new Intl.DateTimeFormat('en-US', {
+                timeZone: timeZone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            }).format(new Date(data.datetime));
+
+            return { timezone: data.timezone, currentTime: formattedTime };
+
+        } catch (error) {
+            console.error(error);
+            if (attempt === retries) {
+                return { timezone: timeZone, currentTime: 'N/A' };  // Give up after retries
+            }
+        }
+    }
+}
+      /**
+       * 3. Function: populateTable
+       *    - Iterates over the list of major cities.
+       *    - Calls fetchTimeZone() to retrieve time zone and current time for each city.
+       *    - Creates a new table row and inserts the data into the table.
+       */
+      async function populateTable() {
+        // Select the table body where new rows will be inserted
+        const tableBody = document.querySelector('#weatherTable tbody');
+  
+        // Loop through each city and fetch its corresponding time zone data
+        for (const [city, timeZone] of Object.entries(cityTimeZones)) {
+          // Fetch the time zone and current time for the city
+          const { timezone, currentTime } = await fetchTimeZone(timeZone);
+  
+          // Create a new table row
+          const row = document.createElement('tr');
+  
+          // Create a table cell for the city name
+          const cityCell = document.createElement('td');
+          cityCell.textContent = city;
+  
+          // Create a table cell for the time zone
+          const timeZoneCell = document.createElement('td');
+          timeZoneCell.textContent = timezone;
+  
+          // Create a table cell for the formatted current time
+          const timeCell = document.createElement('td');
+          timeCell.textContent = currentTime;
+  
+          // Append all cells to the row
+          row.appendChild(cityCell);
+          row.appendChild(timeZoneCell);
+          row.appendChild(timeCell);
+  
+          // Append the row to the table body
+          tableBody.appendChild(row);
+        }
+      }
+  
+      /**
+       * 4. Trigger populateTable() when the window loads.
+       *    - This ensures the table is populated automatically when the page loads.
+       */
+      window.onload = populateTable;
+    </script>
+
+
+    <section id="feature" class="section-p1">
+        <div class="fe-box">
+            <img src="images/features/f1.png" alt="">
+            <h6>Free Shipping</h6>
+        </div>
+        <div class="fe-box">
+            <img src="images/features/f2.png" alt="">
+            <h6>Online Order</h6>
+        </div>
+        <div class="fe-box">
+            <img src="images/features/f3.png" alt="">
+            <h6>Save Money</h6>
+        </div>
+        <div class="fe-box">
+            <img src="images/features/f4.png" alt="">
+            <h6>Promotions</h6>
+        </div>
+        <div class="fe-box">
+            <img src="images/features/f5.png" alt="">
+            <h6>Happy Sell</h6>
+        </div>
+        <div class="fe-box">
+            <img src="images/features/f6.png" alt="">
+            <h6>F24/7 Support</h6>
+        </div>
+    </section>
+
+    <section id="newsletter" class="section-p1 section-m1">
+        <div class="newstext">
+            <h4>Sign Up For Newsletter</h4>
+            <p>Get E-mail updates about our latest shop and <span>special offers.</span></p>
+        </div>
+        <div class="form">
+            <input type="text" placeholder="Your email address">
+            <button class="normal">Sign Up</button>
+        </div>
+    </section>
+
+    <footer class="section-p1">
+        <div class="col">
+            <img class="logo" src="images/logo.png" alt="">
+            <h4>Contact</h4>
+            <p><strong>Address:</strong> Windsor, Ontario - 300 Ouellette Ave</p>
+            <p><strong>Phone:</strong> +519-345-1394</p>
+            <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+            <div class="follow">
+                <h4>Follow us</h4>
+                <div class="icon">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-pinterest-p"></i>
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In</a>
+            <a href="#">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App Store or Google Play</p>
+            <div class="row">
+                <img src="images/pay/app.jpg" alt="">
+                <img src="images/pay/play.jpg" alt="">
+            </div>
+            <p>Secured Payment Gateway</p>
+            <img src="images/pay/pay.png" alt="">
+        </div>
+        <div class="copyright">
+            <p>Created By Yumna Sumya | All Rights Reserved | &#169; 2025</p>
+        </div>
+    </footer>
+
+    <!-- javascript script file link -->
+    <script src="script.js"></script>
+</body>
+
+</html>
