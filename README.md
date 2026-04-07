@@ -60,4 +60,4 @@ https://yourdomain.com/finalproject/index.php
 OR (as it is hosted online you can simply access website easily through this link):
 https://sumya.myweb.cs.uwindsor.ca/c3077proj/index.php 
 
-*Admin accounts CANNOT be created on the website as we don’t want anyone to have access to admin only features. Thus they are added manually directly on phpMyAdmin. You can access an admin account for grading using these credentials: 
+*Admin accounts CANNOT be created on the website as we don’t want anyone to have access to admin only features. Thus they are added manually directly on phpMyAdmin. You can access an admin account for grading using these credentials: ('admin@test.com', '1234')
