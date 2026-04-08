@@ -8,6 +8,7 @@ $pdo_status = false;
 
 try {
     $pdo = new PDO("mysql:host=localhost;dbname=sumya_c3077", "sumya_c3077", "63jNSBGPAUbpT6hPMDPq");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo_status = true;
 } catch (PDOException $e) {
     $pdo_status = false;
@@ -31,6 +32,8 @@ if (isset($_GET['disable'])) {
     $id = $_GET['disable'];
     $stmt = $pdo->prepare("UPDATE user_data SET disabled = 1 WHERE id = ?");
     $stmt->execute([$id]);
+    header("Location: admin.php");
+    exit();
 }
 
 // Enable user
@@ -38,6 +41,8 @@ if (isset($_GET['enable'])) {
     $id = $_GET['enable'];
     $stmt = $pdo->prepare("UPDATE user_data SET disabled = 0 WHERE id = ?");
     $stmt->execute([$id]);
+    header("Location: admin.php");
+    exit();
 }
 
 //insert new product data into phpMyAdmin table for products called flower_data
@@ -48,6 +53,20 @@ if (isset($_POST['add'])) {
 
     $stmt = $pdo->prepare("INSERT INTO flower_data (product_no, flower_type, color) VALUES (?, ?, ?)");
     $stmt->execute([$product_no, $flower_type, $color]);
+    header("Location: admin.php");
+    exit();
+}
+
+// Update product
+if (isset($_POST['update'])) {
+    $product_no = intval($_POST['product_no']);
+    $flower_type = $_POST['flower_type'];
+    $color = $_POST['color'];
+
+    $stmt = $pdo->prepare("UPDATE flower_data SET flower_type = ?, color = ? WHERE product_no = ?");
+    $stmt->execute([$flower_type, $color, $product_no]);
+    header("Location: admin.php");
+    exit();
 }
 ?>
 
@@ -79,6 +98,37 @@ if (isset($_POST['add'])) {
     padding: 10px;
     border-radius: 8px;
     background: #cdc3d3;
+}
+
+.admin-section {
+    width: 80%;
+    margin: 40px auto; /* centers horizontally + spacing */
+    padding: 20px;
+    border-radius: 10px;
+    background: #f9f9f9;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.admin-section table {
+    margin: 20px auto; /* center table */
+    border-collapse: collapse;
+}
+
+.admin-section th, .admin-section td {
+    padding: 10px 15px;
+    text-align: center;
+}
+
+.admin-section form input {
+    margin: 5px;
+    padding: 8px;
+}
+
+.admin-section button {
+    margin: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
 }
 </style>
 
@@ -125,9 +175,13 @@ if (isset($_POST['add'])) {
     </section>
 
     <section id="page-header" class="about-header">
-        <h2>#KnowUs</h2>
-        <p>Get to know more about us</p>
+        <h2>System Admin</h2>
+        <p>System Admin Control</p>
     </section>
+
+    <div class="status-box">
+        <strong>A monitoring page reporting the status of the website (and all its feature services) in terms of their working conditions (online/offline) </strong>
+    </div>
 
     <div class="status-box">
         <strong>Current date and time:</strong>
@@ -200,17 +254,51 @@ if (isset($_POST['add'])) {
   
 
     <!--Edit data reocords-->
+    <div class="admin-section">
     <h2>Edit Products</h2>
 
     <form method="POST">
         <input type="number" name="product_no" placeholder="Product No" required>
         <input type="text" name="flower_type" placeholder="Flower Type" required>
         <input type="text" name="color" placeholder="Color" required>
+
         <button type="submit" name="add">Add</button>
+        <button type="submit" name="update">Update</button>
     </form>
 
-    
+<h3>Product List</h3>
+<table border="1" cellpadding="10">
+<tr>
+    <th>Product No</th>
+    <th>Flower Type</th>
+    <th>Color</th>
+    <th>Action</th>
+</tr>
+
+<?php
+$stmt = $pdo->query("SELECT * FROM flower_data");
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    echo "<tr>";
+    echo "<td>".$row['product_no']."</td>";
+    echo "<td>".$row['flower_type']."</td>";
+    echo "<td>".$row['color']."</td>";
+    echo "<td>
+        <form method='POST' style='display:inline;'>
+            <input type='hidden' name='product_no' value='".$row['product_no']."'>
+            <input type='text' name='flower_type' value='".$row['flower_type']."'>
+            <input type='text' name='color' value='".$row['color']."'>
+            <button type='submit' name='update'>Save</button>
+        </form>
+    </td>";
+    echo "</tr>";
+}
+?>
+</table>
+</div>
+
+
 <!--MANAGE users-->
+<div class="admin-section">
 <h2>Manage Users</h2>
 
 <table border="1" cellpadding="10">
@@ -243,6 +331,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 }
 ?>
 </table>
+</div>
 
 
 

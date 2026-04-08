@@ -68,6 +68,37 @@ if (isset($_POST['register'])) {
     border-radius: 8px;
     background: #cdc3d3;
 }
+
+.register-container {
+    width: 40%;
+    margin: 50px auto;
+    padding: 30px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.register-container input {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.register-container button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.register-container a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.register-container a:hover {
+    text-decoration: underline;
+}
 </style>
 
 </head>
@@ -120,6 +151,7 @@ if (isset($_POST['register'])) {
 
     
     <section class="section-p1">
+        <div class="register-container">
     <h2>Create Account</h2>
 
     <form method="POST" action="">
@@ -131,6 +163,7 @@ if (isset($_POST['register'])) {
     <p style="color:green;"><?php echo $message; ?></p>
 
     <p>Already have an account? <a href="login.php">Login</a></p>
+</div>
 </section>
 
 <section id="feature" class="section-p1">

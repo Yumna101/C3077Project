@@ -95,6 +95,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     border-radius: 8px;
     background: #cdc3d3;
 }
+
+.login-container {
+    width: 40%;
+    margin: 50px auto; /* center horizontally */
+    padding: 30px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.login-container input {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.login-container button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.login-container a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+}
 </style>
 
 </head>
@@ -154,6 +185,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!--Code for loggin in if user is customer then allow them to access their cart.php and see what 
     they have ordered-->
     <section class="section-p1">
+        <div class="login-container">
     <h2>Login</h2>
 
     <form method="POST" action="">
@@ -165,6 +197,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <p style="color:red;"><?php echo $message; ?></p>
 
     <p>Don't have an account? <a href="register.php">Create one</a></p>
+        </div>
     </section>
 
 
